@@ -31,10 +31,28 @@ function coloreStato($stato) {
     <style>
         table { border-collapse: collapse; width: 100%; }
         th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: center; }
+        .msg-success { color: green; margin-bottom: 1em; }
+        button.elimina-btn {
+            color: white;
+            background-color: red;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.elimina-btn:hover {
+            background-color: darkred;
+        }
+        form { display: inline; }
     </style>
 </head>
 <body>
     <h2>Gestione Ordini</h2>
+
+    <?php if (isset($_GET['msg']) && $_GET['msg'] === 'ordine_eliminato'): ?>
+        <p class="msg-success">Ordine eliminato con successo.</p>
+    <?php endif; ?>
+
     <table>
         <thead>
             <tr>
@@ -43,22 +61,35 @@ function coloreStato($stato) {
                 <th>Data/Ora</th>
                 <th>Stato</th>
                 <th>Totale</th>
+                <th>Azioni</th>
             </tr>
         </thead>
         <tbody>
         <?php foreach ($ordini as $ordine): ?>
             <tr>
-                <td>#<?= htmlspecialchars($ordine['id']) ?></td>
+                <td>
+                    <a href="dettaglio_ordine.php?id=<?= $ordine['id'] ?>">
+                        #<?= htmlspecialchars($ordine['id']) ?>
+                    </a>
+                </td>
                 <td><?= htmlspecialchars($ordine['numero']) ?></td>
                 <td><?= htmlspecialchars($ordine['data_ora']) ?></td>
                 <td style="color: <?= coloreStato($ordine['stato']) ?>;">
                     <?= htmlspecialchars($ordine['stato']) ?>
                 </td>
                 <td>€ <?= number_format($ordine['totale'], 2) ?></td>
+                <td>
+                    <form method="post" action="elimina_ordine.php" onsubmit="return confirm('Sei sicuro di voler eliminare l\'ordine #<?= $ordine['id'] ?>?');">
+                        <input type="hidden" name="id" value="<?= $ordine['id'] ?>">
+                        <button type="submit" class="elimina-btn">Elimina</button>
+                    </form>
+                </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
+
+    <p><a href="gestisci_prodotti.php">Gestisci Prodotti</a></p>
     <p><a href="logout.php">Logout</a></p>
 </body>
 </html>
