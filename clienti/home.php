@@ -1,5 +1,5 @@
 <?php
-require 'includes/auth_cliente.php';
+require '../includes/auth/auth_cliente.php';
 ?>
 <!DOCTYPE html>
 <html>

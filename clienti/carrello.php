@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require '../includes/db.php';
 
 // Verifica accesso cliente
 if (!isset($_SESSION['ombrellone_id'])) {

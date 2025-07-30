@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
 
 if (!isset($_SESSION['ombrellone_id'])) {
     header('Location: index.php');
@@ -12,7 +12,6 @@ if (!$id_ordine) {
     die("ID ordine mancante.");
 }
 
-// Controlla che l'ordine appartenga all'ombrellone della sessione
 $stmt = $conn->prepare("
     SELECT o.*, om.numero AS numero_ombrellone
     FROM ordini o
@@ -25,7 +24,6 @@ if (!$ordine) {
     die("Ordine non trovato o accesso negato.");
 }
 
-// Prendi dettagli prodotti dell'ordine
 $stmtDettagli = $conn->prepare("
     SELECT d.*, p.nome, p.prezzo
     FROM dettagli_ordini d
