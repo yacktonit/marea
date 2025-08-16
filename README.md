@@ -1,132 +1,73 @@
-# 🏖️ Web App Ordini da Ombrelloni
 
-Questa è una **web app PHP/MySQL** pensata per la gestione degli ordini in uno stabilimento balneare. I clienti possono ordinare direttamente dal loro ombrellone utilizzando un PIN, e il personale può gestire lo stato degli ordini tramite un'interfaccia di amministrazione.
+# Maréa - Gestione Ombrelloni, Ordini e Prodotti
 
-## 📁 Struttura del progetto
+Marea è una webapp PHP/MySQL per la gestione digitale di uno stabilimento balneare: i clienti ordinano dal proprio ombrellone tramite PIN, lo staff gestisce ordini, prodotti e ombrelloni da un pannello amministrativo moderno e responsive.
+
+## Funzionalità principali
+
+### Area Clienti
+- Login tramite PIN ombrellone
+- Visualizzazione e gestione del carrello
+- Ordine di prodotti (cibo, bevande, ecc.)
+- Visualizzazione stato ordini e storico
+
+### Area Amministratore
+- Login amministratore sicuro
+- Dashboard con statistiche (ordini, prodotti, ombrelloni)
+- Gestione ordini (stato, dettaglio, eliminazione)
+- Gestione prodotti (CRUD, immagini, categorie)
+- Gestione ombrelloni (aggiunta, modifica, eliminazione)
+
+## Struttura del progetto
 
 ```
-/ (root)
-├── index.php                  # Homepage / accesso con PIN cliente
-├── home.php                   # Homepage dopo login cliente
-├── ordini_cliente.php         # Lista degli ordini effettuati dal cliente
-├── dettaglio_ordine_cliente.php # Dettaglio di un singolo ordine
-├── logout.php                 # Logout sessione cliente
-├── admin/                     # Area amministrazione (con login protetto)
-│   ├── login.php              # Login amministratore
-│   ├── dashboard.php          # Pannello gestione ordini
-│   ├── ...
-├── includes/
-│   └── db.php                 # Connessione al database
-├── css/
-│   └── styles.css             # Stili personalizzati (opzionale)
-└── README.md                  # Questo file
+/admin/           → Area amministrativa (dashboard, gestione ordini/prodotti/ombrelloni, login admin)
+/clienti/         → Area clienti (login PIN, home, carrello, ordini, prodotti)
+/includes/        → Funzioni PHP, connessione DB, template header/footer
+/assets/          → Risorse statiche (css, js, immagini, favicon)
 ```
 
-## 🧑‍💻 Tecnologie utilizzate
+## Tecnologie utilizzate
 
-- **PHP** 7+
-- **MySQL** (phpMyAdmin per la gestione)
-- **HTML5/CSS3**
-- **JavaScript** (opzionale)
-- **Sessioni PHP** per la gestione login/utente
+- PHP 7+
+- MySQL
+- Bootstrap 5 & Bootstrap Icons
+- HTML5, CSS3, JavaScript
 
-## ⚙️ Setup del progetto
+## Installazione
 
-### 1. Requisiti
+1. Clona il repository
+  ```sh
+  git clone https://github.com/yacktonit/marea.git
+  ```
+2. Configura il database
+  - Importa lo schema SQL fornito (non incluso qui).
+  - Modifica `/includes/db.php` con le tue credenziali MySQL.
+3. Configura XAMPP o un webserver compatibile
+  - Assicurati che la cartella sia accessibile da Apache (es: `/Applications/XAMPP/xamppfiles/htdocs/marea`).
+4. Imposta i permessi di scrittura (per upload immagini prodotti):
+  - `chmod 777 uploads/` (solo in ambiente di sviluppo!)
+5. Accedi
+  - Area clienti: `/clienti/index.php`
+  - Area admin: `/admin/login.php`
 
-- XAMPP, MAMP o qualsiasi server Apache con PHP e MySQL
-- phpMyAdmin (facoltativo ma consigliato)
-- Editor di codice (VS Code, PhpStorm, etc.)
+## Sicurezza
 
-### 2. Importa il database
+- Password admin con hash sicuro
+- Sessioni per autenticazione
+- Dati sanificati per prevenire XSS/SQLi
+- Area admin protetta da login
 
-1. Apri `phpMyAdmin`
-2. Crea un nuovo database chiamato ad esempio `marea`
-3. Esegui lo script SQL che crea le seguenti tabelle:
+## Personalizzazione
 
-```sql
-CREATE TABLE ombrelloni (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  numero INT NOT NULL,
-  pin VARCHAR(10) NOT NULL
-);
+- Modifica i template in `/includes/template/` per cambiare header/footer
+- Aggiungi/rimuovi prodotti e categorie dall’area admin
+- Personalizza i colori modificando le variabili CSS nei template
 
-CREATE TABLE ordini (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_ombrellone INT NOT NULL,
-  data_ora DATETIME NOT NULL,
-  stato VARCHAR(50) NOT NULL DEFAULT 'inviato',
-  totale DECIMAL(10,2) NOT NULL,
-  FOREIGN KEY (id_ombrellone) REFERENCES ombrelloni(id)
-);
+## Autore
 
-CREATE TABLE ordine_dettagli (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_ordine INT NOT NULL,
-  nome_prodotto VARCHAR(255) NOT NULL,
-  quantita INT NOT NULL,
-  prezzo DECIMAL(10,2) NOT NULL,
-  FOREIGN KEY (id_ordine) REFERENCES ordini(id)
-);
-```
+- Sviluppato da [yacktonit](https://github.com/yacktonit)
 
-### 3. Configura la connessione al DB
+---
 
-Modifica `includes/db.php`:
-
-```php
-<?php
-$host = 'localhost';
-$db = 'marea';
-$user = 'root';
-$pass = ''; // o la tua password MySQL
-
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connessione fallita: " . $e->getMessage());
-}
-?>
-```
-
-## ✅ Funzionalità principali
-
-### Cliente
-
-- 🔑 Login con PIN ombrellone
-- 🧾 Visualizzazione ordini passati (`ordini_cliente.php`)
-- 👁️ Dettagli di ogni ordine
-- 🚪 Logout
-
-### Admin (se implementata)
-
-- 👨‍💼 Login amministratore
-- 📦 Visualizzazione e aggiornamento ordini
-- 📊 Statistiche (opzionale)
-
-## 🎨 Styling
-
-Per ora lo stile è semplice e minimale (tabella HTML), ma può essere migliorato con:
-
-- Bootstrap / TailwindCSS
-- Font personalizzati
-- Responsive design per dispositivi mobili
-
-## 🔒 Sicurezza (consigli)
-
-- Sanificare tutti i dati in input/output
-- Proteggere le aree admin con sessioni e controlli di accesso
-- Utilizzare HTTPS in produzione
-- Limitare l’accesso diretto ai file sensibili
-
-## 📌 Note
-
-- Il codice è scritto in PHP nativo, senza framework.
-- Ottimo per progetti scolastici, prototipi o gestione semplice di ordini su spiaggia o campeggio.
-- Può essere facilmente esteso con notifiche, pagamenti, codice QR, ecc.
-
-## ✍️ Autore
-
-Antonio Tomaselli  
-📅 Agosto 2025
+Per segnalare bug o proporre miglioramenti, apri una issue su GitHub!

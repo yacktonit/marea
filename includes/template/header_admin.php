@@ -3,10 +3,11 @@
 $pageTitle = isset($pageTitle) ? $pageTitle : basename($_SERVER['PHP_SELF'], '.php');
 
 $menuItems = isset($menuItems) ? $menuItems : [
-    ['label' => 'Home', 'link' => '/marea/clienti/home.php'],
-    ['label' => 'Carrello', 'link' => '/marea/clienti/carrello.php'],
-    ['label' => 'Ordini', 'link' => '/marea/clienti/ordini_cliente.php'],
-    ['label' => 'Logout', 'link' => '/marea/clienti/logout.php'],
+    ['label' => 'Home', 'link' => '/marea/admin/dashboard.php'],
+    ['label' => 'Ordini', 'link' => '/marea/admin/gestisci_ordini.php'],
+    ['label' => 'Prodotti', 'link' => '/marea/admin/gestisci_prodotti.php'],
+    ['label' => 'Ombrelloni', 'link' => '/marea/admin/gestisci_ombrelloni.php'],
+    ['label' => 'Logout', 'link' => '/marea/admin/logout.php'],
 ];
 ?>
 <!DOCTYPE html>
@@ -95,11 +96,14 @@ $menuItems = isset($menuItems) ? $menuItems : [
                                     case 'home':
                                         echo '<i class="bi bi-house-door me-1"></i>';
                                         break;
-                                    case 'carrello':
-                                        echo '<i class="bi bi-cart me-1"></i>';
-                                        break;
                                     case 'ordini':
                                         echo '<i class="bi bi-receipt me-1"></i>';
+                                        break;
+                                    case 'prodotti':
+                                        echo '<i class="bi bi-box-seam me-1"></i>';
+                                        break;
+                                    case 'ombrelloni':
+                                        echo '<i class="bi bi-umbrella me-1"></i>';
                                         break;
                                     case 'logout':
                                         echo '<i class="bi bi-box-arrow-right me-1"></i>';

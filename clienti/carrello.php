@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../includes/db.php';
+require '../includes/template/header_cliente.php';
 
 // Verifica accesso cliente
 if (!isset($_SESSION['ombrellone_id'])) {
@@ -38,45 +39,89 @@ if (isset($_GET['rimuovi'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
-<head><title>Carrello</title></head>
-<body>
-    <h2>Carrello</h2>
-
-    <?php if (empty($_SESSION['carrello'])): ?>
-        <p>Il carrello è vuoto.</p>
-        <p><a href="prodotti.php">Vai a Ordina Ora</a></p>
-    <?php else: ?>
-        <form method="post" action="invia_ordine.php">
-            <table border="1" cellpadding="5" cellspacing="0">
-                <tr><th>Prodotto</th><th>Quantità</th><th>Prezzo Unitario</th><th>Subtotale</th><th></th></tr>
-                <?php
-                $totale = 0;
-                foreach ($_SESSION['carrello'] as $id => $q):
-                    if (!isset($prodotti_map[$id])) continue; // sicurezza
-                    $p = $prodotti_map[$id];
-                    $sub = $p['prezzo'] * $q;
-                    $totale += $sub;
-                ?>
-                <tr>
-                    <td><?= htmlspecialchars($p['nome']) ?></td>
-                    <td><?= $q ?></td>
-                    <td>€ <?= number_format($p['prezzo'], 2) ?></td>
-                    <td>€ <?= number_format($sub, 2) ?></td>
-                    <td><a href="?rimuovi=<?= $id ?>" onclick="return confirm('Rimuovere prodotto dal carrello?')">Rimuovi</a></td>
-                </tr>
-                <?php endforeach; ?>
-                <tr>
-                    <td colspan="3" style="text-align:right;"><strong>Totale</strong></td>
-                    <td colspan="2">€ <?= number_format($totale, 2) ?></td>
-                </tr>
-            </table>
-            <br>
-            <button type="submit">Invia Ordine</button>
-        </form>
-        <p><a href="prodotti.php">Aggiungi altri prodotti</a></p>
-    <?php endif; ?>
-
-    <p><a href="home.php">Torna alla Home</a></p>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrello</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4 text-primary">Carrello</h2>
+                        <?php if (empty($_SESSION['carrello'])): ?>
+                            <div class="alert alert-info text-center">Il carrello è vuoto.</div>
+                            <div class="text-center mb-3">
+                                <a href="prodotti.php" class="btn btn-success">
+                                    <i class="bi bi-bag-plus me-1"></i>Vai a Ordina Ora
+                                </a>
+                            </div>
+                        <?php else: ?>
+                            <form method="post" action="invia_ordine.php">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered align-middle">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th>Prodotto</th>
+                                                <th>Quantità</th>
+                                                <th>Prezzo Unitario</th>
+                                                <th>Subtotale</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                        $totale = 0;
+                                        foreach ($_SESSION['carrello'] as $id => $q):
+                                            if (!isset($prodotti_map[$id])) continue; // sicurezza
+                                            $p = $prodotti_map[$id];
+                                            $sub = $p['prezzo'] * $q;
+                                            $totale += $sub;
+                                        ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($p['nome']) ?></td>
+                                                <td><?= $q ?></td>
+                                                <td>€ <?= number_format($p['prezzo'], 2) ?></td>
+                                                <td>€ <?= number_format($sub, 2) ?></td>
+                                                <td>
+                                                    <a href="?rimuovi=<?= $id ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Rimuovere prodotto dal carrello?')">
+                                                        <i class="bi bi-trash"></i> Rimuovi
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                            <tr class="table-secondary">
+                                                <td colspan="3" class="text-end"><strong>Totale</strong></td>
+                                                <td colspan="2"><strong>€ <?= number_format($totale, 2) ?></strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 gap-2">
+                                    <a href="prodotti.php" class="btn btn-outline-primary">
+                                        <i class="bi bi-plus-circle me-1"></i>Aggiungi altri prodotti
+                                    </a>
+                                    <button type="submit" class="btn btn-success px-4 fw-bold">
+                                        <i class="bi bi-send me-1"></i>Invia Ordine
+                                    </button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
+                        <div class="text-center mt-4">
+                            <a href="home.php" class="btn btn-link text-decoration-none">
+                                <i class="bi bi-arrow-left"></i> Torna alla Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
